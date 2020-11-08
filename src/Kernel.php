@@ -103,14 +103,17 @@ class Kernel extends BaseKernel
         $routes->add('create', '/')->controller([$this, 'create'])->methods(['POST']);
     }
 
-    public function retrieve(string $name): RedirectResponse
+    public function retrieve(string $name): Response
     {
         $queryBus = $this->getContainer()->get('app.query_bus');
 
         try {
             $shortLink = $queryBus->handle(new ReferenceQuery($name));
         } catch (ApplicationException | Throwable $exception) {
-            //TODO redirect to some error page
+            return new JsonResponse(
+                ['status' => 'error', 'message' => $exception->getMessage()],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         return new RedirectResponse($shortLink->asString());
