@@ -14,7 +14,7 @@ use App\Infrastructure\Container\ContainerInterface;
 use App\Infrastructure\Container\PimpleContainerAdapter;
 use App\Infrastructure\Logger\NoopLogger;
 use App\Infrastructure\ServiceBus\SymfonyCommandBus;
-use App\Tests\Integration\Fake\InMemoryReferenceRepository;
+use App\Infrastructure\Persistence\InMemory\ReferenceRepository;
 use App\Tests\Integration\Stub\StubCalendar;
 use App\Tests\Integration\Stub\StubUuidProvider;
 use DateTimeImmutable;
@@ -33,7 +33,7 @@ class CreateReferenceTest extends TestCase
             return new NoopLogger();
         };
         $container['reference_repository'] = function ($c) {
-            return new InMemoryReferenceRepository([
+            return new ReferenceRepository([
                 Reference::fromParameters(
                     Identity::fromString('de72ec48-62a8-4d37-84c3-08abd19fa66d'),
                     Name::fromString('facebook'),

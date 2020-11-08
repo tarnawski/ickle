@@ -15,7 +15,6 @@ use App\Infrastructure\RamseyIdentityProvider;
 use App\Infrastructure\ServiceBus\SymfonyCommandBus;
 use App\Infrastructure\ServiceBus\SymfonyQueryBus;
 use App\Infrastructure\SystemCalendar;
-use App\Tests\Integration\Fake\InMemoryReferenceRepository;
 use PDO;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;

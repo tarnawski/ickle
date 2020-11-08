@@ -13,7 +13,7 @@ use App\Domain\Reference\Url;
 use App\Infrastructure\Container\ContainerInterface;
 use App\Infrastructure\Container\PimpleContainerAdapter;
 use App\Infrastructure\Logger\NoopLogger;
-use App\Tests\Integration\Fake\InMemoryReferenceRepository;
+use App\Infrastructure\Persistence\InMemory\ReferenceRepository;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 use Pimple\Container;
@@ -29,7 +29,7 @@ class RetrieveReferenceTest extends TestCase
             return new NoopLogger();
         };
         $container['reference_repository'] = function ($c) {
-            return new InMemoryReferenceRepository([
+            return new ReferenceRepository([
                 Reference::fromParameters(
                     Identity::fromString('de72ec48-62a8-4d37-84c3-08abd19fa66d'),
                     Name::fromString('google'),

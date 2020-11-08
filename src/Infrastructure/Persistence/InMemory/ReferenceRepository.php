@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Integration\Fake;
+namespace App\Infrastructure\Persistence\InMemory;
 
 use App\Domain\Reference\Name;
 use App\Domain\Reference\Reference;
 use App\Domain\ReferenceRepositoryInterface;
 use App\Infrastructure\Exception\PersistenceException;
 
-class InMemoryReferenceRepository implements ReferenceRepositoryInterface
+class ReferenceRepository implements ReferenceRepositoryInterface
 {
     public array $references = [];
 
