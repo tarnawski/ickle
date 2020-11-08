@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Integration\Symfony;
 
 use App\Application\Command\CreateReferenceCommand;
 use App\Application\Command\CreateReferenceCommandHandler;
@@ -41,18 +41,9 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    private const PARAMETERS = [
-        'APP_ENV' => 'dev',
-        'DEBUG' => true,
-        'SECRET' => 'S0ME_SECRET',
-        'DATABASE_DNS' => 'mysql:dbname=ickle;host=mysql',
-        'DATABASE_USERNAME' => 'admin',
-        'DATABASE_PASSWORD' => 'secret',
-    ];
-
     public function __construct()
     {
-        parent::__construct(self::PARAMETERS['APP_ENV'], self::PARAMETERS['DEBUG']);
+        parent::__construct($_ENV['APP_ENV'], $_ENV['APP_ENV'] !== 'prod');
     }
 
     public function registerBundles(): array
@@ -65,13 +56,13 @@ class Kernel extends BaseKernel
     protected function configureContainer(ContainerConfigurator $c): void
     {
         $c->extension('framework', [
-            'secret' => self::PARAMETERS['SECRET'],
+            'secret' => $_ENV['SECRET'],
         ]);
         $c->services()->set('app.logger', NoopLogger::class);
         $c->services()->set('pdo', PDO::class)->args([
-            '$dsn' => self::PARAMETERS['DATABASE_DNS'],
-            '$username' => self::PARAMETERS['DATABASE_USERNAME'],
-            '$passwd' => self::PARAMETERS['DATABASE_PASSWORD'],
+            '$dsn' => $_ENV['DATABASE_DNS'],
+            '$username' => $_ENV['DATABASE_USERNAME'],
+            '$passwd' => $_ENV['DATABASE_PASSWORD'],
         ]);
         $c->services()->set('app.reference_repository', ReferenceRepository::class)->args([
             '$connection' => new Reference('pdo')
