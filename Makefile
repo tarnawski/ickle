@@ -7,6 +7,8 @@ phpcbf:
 	php vendor/bin/phpcbf
 phpstan:
 	php vendor/bin/phpstan analyse -c phpstan.neon
+phpmd:
+	php vendor/bin/phpmd src ansi codesize,unusedcode,naming
 phpunit:
 	php vendor/bin/phpunit -c phpunit.xml.dist
 

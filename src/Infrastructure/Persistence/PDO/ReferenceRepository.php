@@ -9,6 +9,7 @@ use App\Domain\Reference\Name;
 use App\Domain\Reference\Reference;
 use App\Domain\Reference\Url;
 use App\Domain\ReferenceRepositoryInterface;
+use App\Infrastructure\Exception\NotFoundException;
 use App\Infrastructure\Exception\PersistenceException;
 use DateTimeImmutable;
 use PDO;
@@ -52,6 +53,10 @@ class ReferenceRepository implements ReferenceRepositoryInterface
             $result = $sth->fetch();
         } catch (PDOException $exception) {
             throw new PersistenceException('Failed to fetch reference by name.', 0, $exception);
+        }
+
+        if (false === $result) {
+            throw new NotFoundException('Failed to fetch reference by name.');
         }
 
         return Reference::fromParameters(

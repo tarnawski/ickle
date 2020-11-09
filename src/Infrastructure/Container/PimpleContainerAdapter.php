@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Container;
 
+use App\Application\ContainerInterface;
 use Pimple\Container;
 
 class PimpleContainerAdapter implements ContainerInterface
@@ -15,13 +16,13 @@ class PimpleContainerAdapter implements ContainerInterface
         $this->container = $container;
     }
 
-    public function get(string $id)
+    public function get(string $identity)
     {
-        return $this->container[$id];
+        return $this->container[$identity];
     }
 
-    public function has(string $id): bool
+    public function has(string $identity): bool
     {
-        return isset($this->container[$id]);
+        return isset($this->container[$identity]);
     }
 }

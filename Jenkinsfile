@@ -19,6 +19,9 @@ pipeline {
 					},
 					"PHPStan": {
 						sh 'php74 vendor/bin/phpstan analyse -c phpstan.neon --no-progress'
+					},
+					"PHP Mess Detector": {
+						sh 'php74 vendor/bin/phpmd src ansi codesize,unusedcode,naming'
 					}
 				)
 			}
