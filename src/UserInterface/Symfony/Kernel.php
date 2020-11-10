@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Validation;
@@ -71,10 +72,7 @@ class Kernel extends BaseKernel
         try {
             $shortLink = $ickle->query(new ReferenceQuery($name));
         } catch (ApplicationException | Throwable $exception) {
-            return new JsonResponse(
-                ['status' => 'error', 'message' => $exception->getMessage()],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new RedirectResponse($shortLink->asString());
@@ -85,61 +83,43 @@ class Kernel extends BaseKernel
         /** @var System $ickle */
         $ickle = $this->getContainer()->get('ickle');
 
-        $form = Forms::createFormFactoryBuilder()
-            ->addExtension(new HttpFoundationExtension())
-            ->addExtension(new ValidatorExtension(Validation::createValidator()))
-            ->getFormFactory()
-            ->createBuilder(FormType::class)
-            ->add('url', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 5, 'max' => 255])
-                ],
-            ])
-            ->add('name', TextType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                    new Length(['min' => 5, 'max' => 255]),
-                ],
-            ])
-            ->getForm()
-            ->submit(json_decode($request->getContent(), true));
+        $data = json_decode($request->getContent(), true);
+        $violations = Validation::createValidator()->validate($data, new Collection([
+            'url' => [
+                new NotBlank(['message' => 'URL should not be blank.']),
+                new Length([
+                    'min' => 5,
+                    'max' => 255,
+                    'minMessage' => 'URL is too short.',
+                    'maxMessage' => 'URL is too long.',
+                ]),
+            ],
+            'name' => [
+                new NotBlank(['message' => 'Name should not be blank.']),
+                new Length([
+                    'min' => 5,
+                    'max' => 255,
+                    'minMessage' => 'Name is too short.',
+                    'maxMessage' => 'Name is too long.',
+                ]),
+            ]
+        ]));
 
-        if (!$form->isValid()) {
-            return new JsonResponse(
-                ['status' => 'error', 'message' => $this->retrieveErrorsFromForm($form)],
-                Response::HTTP_BAD_REQUEST
-            );
+        if (!empty($violations)) {
+            return $this->error($violations->get(0)->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
         try {
-            $ickle->handle(new CreateReferenceCommand(
-                $form->getData()['url'],
-                $form->getData()['name']
-            ));
+            $ickle->handle(new CreateReferenceCommand($data['url'], $data['name']));
         } catch (ApplicationException | Throwable $exception) {
-            return new JsonResponse(
-                ['status' => 'error', 'message' => $exception->getMessage()],
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return new JsonResponse(['status' => 'success']);
     }
 
-    private function retrieveErrorsFromForm(FormInterface $form): array
+    private function error(string $message, int $status): JsonResponse
     {
-        $errors = [];
-        foreach ($form->getErrors() as $key => $error) {
-            $errors[$key] = $error->getMessage();
-        }
-        foreach ($form->all() as $child) {
-            if (!$child->isValid()) {
-                $key = $child->getName();
-                $errors[$key] = $this->retrieveErrorsFromForm($child);
-            }
-        }
-
-        return $errors;
+        return new JsonResponse(['status' => 'error', 'message' => $message], $status);
     }
 }
