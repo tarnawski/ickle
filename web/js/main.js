@@ -1,31 +1,15 @@
 const BASIC_URL = 'http://localhost';
 
-const send = (url, name) =>
-    fetch(BASIC_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ url: url, name: name})
-    }).then(response => response.json());
-
-var toast = {
-    container: new bootstrap.Toast(document.getElementById('ickle.toast')),
-    message: document.getElementById('ickle.toast.message')
-};
-var form = {
-    url: document.getElementById('ickle.url'),
-    name: document.getElementById('ickle.name')
-}
 var alert = {
     container: document.getElementById('ickle.alert'),
-    shortling: document.getElementById('ickle.alert.shortlink')
+    message: document.getElementById('ickle.alert.message'),
+    closebtn: document.getElementById('ickle.alert.closebtn'),
 }
 
-function clearForm()
-{
-    form.url.value = '';
-    form.name.value = '';
+var form = {
+    url: document.getElementById('ickle.form.url'),
+    name: document.getElementById('ickle.form.name'),
+    submit: document.getElementById('ickle.form.submit')
 }
 
 function shortlink(name)
@@ -37,22 +21,35 @@ function shortlink(name)
     return shortlink;
 }
 
-document.getElementById('ickle.create').addEventListener('click', function () {
-    send(form.url.value, form.name.value).then(response => {
+function submitForm()
+{
+    fetch(BASIC_URL, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ url: form.url.value, name: form.name.value})
+    }).then(response => response.json()).then(response => {
         if (response.status === 'success') {
-            toast.container.hide();
-            alert.shortling.innerHTML = '';
-            alert.shortling.append(shortlink(form.name.value));
-            alert.container.classList.add("show");
+            alert.message.innerHTML = 'Well done! ';
+            alert.message.append(shortlink(form.name.value));
+            alert.container.className = 'ickle-success';
+            alert.container.style.display = "block";
             clearForm();
-
-            return;
-        }
-        if (response.status === 'error') {
-            toast.message.innerText = response.message;
-            toast.container.show();
-
-            return;
+        } else {
+            alert.message.innerText = response.message;
+            alert.container.className = 'ickle-error';
+            alert.container.style.display = 'block';
         }
     });
-});
+}
+
+function clearForm()
+{
+    form.url.value = '';
+    form.name.value = '';
+}
+
+form.submit.addEventListener('click', function () { submitForm(); });
+alert.closebtn.addEventListener('click', function () { alert.container.style.display = 'none'; });
+

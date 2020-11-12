@@ -99,7 +99,7 @@ class Kernel extends BaseKernel
             ]
         ]));
 
-        if (!empty($violations)) {
+        if ($violations->count() > 0) {
             return $this->error($violations->get(0)->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 

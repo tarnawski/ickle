@@ -1,15 +1,78 @@
-.main {
+.ickle-main {
     margin-top: 30vh;
+    flex-grow: 1;
 }
+.ickle-title {
+    text-align: center;
+}
+.ickle-form {
+    padding: 0 20%;
+    display: flex;
+    align-items: center;
+}
+
+.ickle-form .ickle-form-url, .ickle-form .ickle-form-name {
+    flex-grow: 1;
+}
+
+.ickle-form input {
+    width: 100%;
+    vertical-align: middle;
+    margin: 5px 0 5px 0;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.ickle-form input:focus, .ickle-form button:focus {
+    outline: none;
+}
+
+.ickle-form button {
+    padding: 10px 20px;
+    background-color: dodgerblue;
+    border: 1px solid dodgerblue;
+    color: white;
+}
+
+.ickle-form button:hover {
+    background-color: royalblue;
+    border: 1px solid royalblue;
+}
+
+.ickle-success, .ickle-error {
+    display: none;
+    margin: 2vh 20%;
+    padding: 20px;
+    color: white;
+}
+.ickle-error {
+    background-color: #f44336;
+}
+.ickle-success {
+    background-color: #4CAF50;
+}
+.ickle-closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.ickle-closebtn:hover {
+    color: black;
+}
+.ickle-closebtn:hover {
+    color: black;
+}
+
 .footer {
-    margin-bottom: 2vh;
-}
-.toast {
+    padding: 15px 10px;
     position: absolute;
-    top: 5vh;
-    right: 5vh;
-}
-.shortlink {
-    font-size: 20px;
-    color: #0069d9;
+    right: 0;
+    bottom: 0;
+    left: 0;
 }
