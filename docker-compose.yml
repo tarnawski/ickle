@@ -6,10 +6,6 @@ services:
     volumes:
       - .:/var/www/html
     working_dir: /var/www/html
-    environment:
-      APP_ENV: dev
-      SECRET: e8a24534bd9c13412ac919164c989bc3
-      DATABASE_URL: mysql://admin:secret@mysql:3306/ickle
     depends_on:
       - mysql
   nginx:

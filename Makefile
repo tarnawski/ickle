@@ -11,6 +11,19 @@ phpmd:
 	php vendor/bin/phpmd src ansi codesize,unusedcode,naming
 phpunit:
 	php vendor/bin/phpunit -c phpunit.xml.dist
+archive:
+	touch archive.tar & tar -czf archive.tar . \
+		--exclude=archive.tar \
+		--exclude=docker \
+		--exclude=tests \
+		--exclude=var \
+		--exclude=docker-compose.yml \
+		--exclude=phpunit.xml.dist \
+		--exclude=Makefile \
+		--exclude=Jenkinsfile \
+		--exclude=.git \
+		--exclude=.gitignore \
+		--exclude=README.md
 
 default:
 	@echo "Static analysis and unit tests...";
