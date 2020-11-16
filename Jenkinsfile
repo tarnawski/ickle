@@ -37,7 +37,7 @@ pipeline {
 			}
 		}
 		stage('Deploy to production') {
-			when { branch 'master' }
+			when { branch 'main' }
 			steps {
 				sh 'composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs --no-progress --no-suggest'
 				sh 'composer archive --format=tar --file=artifact'
