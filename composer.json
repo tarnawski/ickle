@@ -38,5 +38,19 @@
         "squizlabs/php_codesniffer": "^3.5",
         "phpstan/phpstan": "^0.12.54",
         "phpmd/phpmd": "^2.9"
+    },
+    "archive": {
+        "exclude": [
+            "docker",
+            "tests",
+            "var",
+            "docker-compose.yml",
+            "phpunit.xml.dist",
+            "Makefile",
+            "README.md",
+            "Jenkinsfile",
+            ".git",
+            ".gitignore"
+        ]
     }
 }

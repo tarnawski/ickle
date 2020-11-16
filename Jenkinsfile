@@ -36,5 +36,13 @@ pipeline {
 				sh 'php74 vendor/bin/phpunit -c phpunit.xml.dist --testsuite=integration'
 			}
 		}
+		stage('Deploy to production') {
+			when { branch 'master' }
+			steps {
+				sh 'composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs --no-progress --no-suggest'
+				sh 'composer archive --format=tar --file=artifact'
+				sh 'ansible-playbook ansible/deploy.yml'
+			}
+		}
 	}
 }
