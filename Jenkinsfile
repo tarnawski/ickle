@@ -40,18 +40,8 @@ pipeline {
 			when { branch 'main' }
 			steps {
 				sh 'composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs --no-progress --no-suggest'
-				sh 'tar -czvf artifact.tar . \
-                    		--exclude=archive.tar \
-                    		--exclude=docker \
-                    		--exclude=tests \
-                    		--exclude=var \
-                    		--exclude=docker-compose.yml \
-                    		--exclude=phpunit.xml.dist \
-                    		--exclude=Makefile \
-                    		--exclude=Jenkinsfile \
-                    		--exclude=.git \
-                    		--exclude=.gitignore \
-                    		--exclude=README.md'
+				sh 'touch archive.tar'
+				sh 'tar -czf archive.tar . --exclude=archive.tar --exclude=docker --exclude=tests --exclude=var'
 				sh 'ansible-playbook ansible/deploy.yml'
 			}
 		}
