@@ -40,7 +40,7 @@ pipeline {
 			when { branch 'main' }
 			steps {
 				sh 'composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs --no-progress --no-suggest'
-				sh 'tar -czf archive.tar *'
+				sh 'tar -czf artifact.tar *'
 				sh 'ansible-playbook ansible/deploy.yml'
 			}
 		}
