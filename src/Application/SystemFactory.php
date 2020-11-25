@@ -47,11 +47,11 @@ class SystemFactory
         $container['calendar'] = function ($container) {
             return new SystemCalendar();
         };
-        $container['reference_service'] = function ($c) {
+        $container['reference_service'] = function ($container) {
             return new \App\Domain\ReferenceService(
-                $c['identity_provider'],
-                $c['calendar'],
-                $c['reference_repository']
+                $container['identity_provider'],
+                $container['calendar'],
+                $container['reference_repository']
             );
         };
         $container['query.handler.reference'] = function ($container) {
