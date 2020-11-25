@@ -8,18 +8,18 @@ use App\Domain\Exception\InvalidArgumentException;
 
 class Name
 {
-    private const MIN_URL_LENGTH = 5;
-    private const MAX_URL_LENGTH = 255;
+    private const MIN_NAME_LENGTH = 5;
+    private const MAX_NAME_LENGTH = 255;
 
     private string $value;
 
     private function __construct(string $value)
     {
-        if (self::MIN_URL_LENGTH > strlen($value)) {
+        if (self::MIN_NAME_LENGTH > strlen($value)) {
             throw new InvalidArgumentException(sprintf('Name "%s" is to short.', $value));
         }
 
-        if (self::MAX_URL_LENGTH < strlen($value)) {
+        if (self::MAX_NAME_LENGTH < strlen($value)) {
             throw new InvalidArgumentException(sprintf('Name "%s" is to long.', $value));
         }
 

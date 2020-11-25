@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace App\Infrastructure\ServiceBus;
 
 use App\Application\CommandBusInterface;
+use App\Application\Exception\ApplicationException;
 use App\Infrastructure\ServiceBus\Adapter\CommandHandlerAdapter;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\Handler\HandlersLocator;
 use Symfony\Component\Messenger\MessageBus;
 use Symfony\Component\Messenger\Middleware\HandleMessageMiddleware;
@@ -23,6 +25,16 @@ class SymfonyCommandBus implements CommandBusInterface
 
     public function handle($command): void
     {
-        $this->bus->dispatch($command);
+        try {
+            $this->bus->dispatch($command);
+        } catch (HandlerFailedException $exception) {
+            foreach ($exception->getNestedExceptions() as $nestedException) {
+                if ($nestedException instanceof ApplicationException) {
+                    throw $nestedException;
+                }
+            }
+
+            throw $exception;
+        }
     }
 }

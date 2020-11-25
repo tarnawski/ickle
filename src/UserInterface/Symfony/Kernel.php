@@ -65,7 +65,7 @@ class Kernel extends BaseKernel
 
         try {
             $shortLink = $ickle->query(new ReferenceQuery($name));
-        } catch (ApplicationException | Throwable $exception) {
+        } catch (ApplicationException $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -105,7 +105,7 @@ class Kernel extends BaseKernel
 
         try {
             $ickle->handle(new CreateReferenceCommand($data['url'], $data['name']));
-        } catch (ApplicationException | Throwable $exception) {
+        } catch (ApplicationException $exception) {
             return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 

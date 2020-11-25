@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Unit\Domain\Reference;
+namespace App\Tests\Unit\Domain\Reference;
 
 use App\Domain\Exception\InvalidArgumentException;
 use App\Domain\Reference\Identity;
