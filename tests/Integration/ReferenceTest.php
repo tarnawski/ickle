@@ -50,11 +50,16 @@ class ReferenceTest extends TestCase
         $container['calendar'] = function ($c) {
             return new StubCalendar(new DateTimeImmutable('2019-06-17 18:24:21'));
         };
-        $container['command.handler.create_reference'] = function ($c) {
-            return new CreateReferenceCommandHandler(
+        $container['reference_service'] = function ($c) {
+            return new \App\Domain\ReferenceService(
                 $c['identity_provider'],
                 $c['calendar'],
-                $c['reference_repository'],
+                $c['reference_repository']
+            );
+        };
+        $container['command.handler.create_reference'] = function ($c) {
+            return new CreateReferenceCommandHandler(
+                $c['reference_service'],
                 $c['logger']
             );
         };
@@ -65,7 +70,7 @@ class ReferenceTest extends TestCase
         };
         $container['query.handler.reference'] = function ($c) {
             return new \App\Application\Query\ReferenceQueryHandler(
-                $c['reference_repository'],
+                $c['reference_service'],
                 $c['logger']
             );
         };
@@ -98,7 +103,7 @@ class ReferenceTest extends TestCase
     {
         // TODO Symfony messenger change exception class
         $this->expectException(Throwable::class);
-        $this->expectExceptionMessage('Reference name already exist.');
+        $this->expectExceptionMessage('Reference can not be created.');
 
         $command = new CreateReferenceCommand('https://www.facebook.pl', 'facebook');
         $this->system->handle($command);
