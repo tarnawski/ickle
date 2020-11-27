@@ -21,6 +21,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Url;
 use Symfony\Component\Validator\Validation;
 use Throwable;
 
@@ -81,12 +82,7 @@ class Kernel extends BaseKernel
         $violations = Validation::createValidator()->validate($data, new Collection([
             'url' => [
                 new NotBlank(['message' => 'URL should not be blank.']),
-                new Length([
-                    'min' => 5,
-                    'max' => 255,
-                    'minMessage' => 'URL is too short.',
-                    'maxMessage' => 'URL is too long.',
-                ]),
+                new Url(['message' => 'URL is not valid'])
             ],
             'name' => [
                 new NotBlank(['message' => 'Name should not be blank.']),
