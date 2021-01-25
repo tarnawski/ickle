@@ -55,8 +55,23 @@ class Kernel extends BaseKernel
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        $routes->add('retrieve', '/{name}')->controller([$this, 'retrieve'])->methods(['GET']);
-        $routes->add('create', '/')->controller([$this, 'create'])->methods(['POST']);
+        $routes->add('redirect', '/{name}')->controller([$this, 'redirect'])->methods(['GET']);
+        $routes->add('retrieve', '/shortlink/{name}')->controller([$this, 'retrieve'])->methods(['GET']);
+        $routes->add('create', '/shortlink')->controller([$this, 'create'])->methods(['POST']);
+    }
+
+    public function redirect(string $name): Response
+    {
+        /** @var System $ickle */
+        $ickle = $this->getContainer()->get('ickle');
+
+        try {
+            $shortLink = $ickle->query(new ReferenceQuery($name));
+        } catch (ApplicationException $exception) {
+            return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new RedirectResponse($shortLink->asString());
     }
 
     public function retrieve(string $name): Response
@@ -70,7 +85,7 @@ class Kernel extends BaseKernel
             return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new RedirectResponse($shortLink->asString());
+        return new JsonResponse(['shortlink' => $shortLink->asString()]);
     }
 
     public function create(Request $request): JsonResponse
@@ -105,7 +120,7 @@ class Kernel extends BaseKernel
             return $this->error($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return new JsonResponse(['status' => 'success']);
+        return new JsonResponse(['status' => 'success'], Response::HTTP_CREATED);
     }
 
     private function error(string $message, int $status): JsonResponse
