@@ -23,7 +23,7 @@ function shortlink(name)
 
 function submitForm()
 {
-    fetch(BASIC_URL, {
+    fetch(BASIC_URL + '/shortlink', {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
