@@ -8,6 +8,7 @@ use App\Application\Command\CreateReferenceCommandHandler;
 use App\Application\Query\ReferenceQueryHandler;
 use App\Infrastructure\Container\PimpleContainerAdapter;
 use App\Infrastructure\Logger\NoopLogger;
+use App\Infrastructure\Persistence\PDO\PDOFactory;
 use App\Infrastructure\Persistence\PDO\ReferenceRepository;
 use App\Infrastructure\RamseyIdentityProvider;
 use App\Infrastructure\ServiceBus\SymfonyCommandBus;
@@ -25,16 +26,7 @@ class SystemFactory
             return new NoopLogger();
         };
         $container['pdo'] = function ($container) use ($database) {
-            return new PDO(
-                sprintf(
-                    '%s:host=%s;dbname=%s',
-                    parse_url($database, PHP_URL_SCHEME),
-                    parse_url($database, PHP_URL_HOST),
-                    ltrim(parse_url($database, PHP_URL_PATH), "/")
-                ),
-                parse_url($database, PHP_URL_USER),
-                parse_url($database, PHP_URL_PASS)
-            );
+            return PDOFactory::createFromDsn($database);
         };
         $container['reference_repository'] = function ($container) {
             return new ReferenceRepository(
